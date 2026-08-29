@@ -1,0 +1,19 @@
+services:
+  ecommerce-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    container_name: ecommerce-api
+
+    ports:
+      - "8080:8080"
+
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+
+    volumes:
+      - ecommerce-data:/app/data
+
+volumes:
+  ecommerce-data:

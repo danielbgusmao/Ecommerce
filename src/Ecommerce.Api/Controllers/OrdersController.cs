@@ -4,9 +4,11 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Ecommerce.Application.Orders.Queries.GetOrders;
 using Ecommerce.Application.Orders.Commands.CancelOrder;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Ecommerce.Api.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/orders")]
 public sealed class OrdersController : ControllerBase
@@ -76,5 +78,5 @@ public sealed class OrdersController : ControllerBase
         return NoContent();
     }
 
-    
+
 }
