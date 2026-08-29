@@ -1,4 +1,5 @@
 using Ecommerce.Application.Orders.Commands.CreateOrder;
+using Ecommerce.Application.Orders.Queries.GetOrderById;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -31,8 +32,17 @@ public sealed class OrdersController : ControllerBase
     }
 
     [HttpGet("{id:guid}")]
-    public IActionResult GetById(Guid id)
+    public async Task<IActionResult> GetById(
+        Guid id,
+        CancellationToken cancellationToken)
     {
-        return NotFound();
+        var order = await _sender.Send(
+            new GetOrderByIdQuery(id),
+            cancellationToken);
+
+        if (order is null)
+            return NotFound();
+
+        return Ok(order);
     }
 }

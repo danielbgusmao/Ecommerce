@@ -1,5 +1,6 @@
 using Ecommerce.Application.Abstractions.Persistence;
 using Ecommerce.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Ecommerce.Infrastructure.Persistence.Repositories;
 
@@ -23,5 +24,17 @@ public sealed class OrderRepository : IOrderRepository
 
         await _dbContext.SaveChangesAsync(
             cancellationToken);
+    }
+
+    public async Task<Order?> GetByIdAsync(
+        Guid id,
+        CancellationToken cancellationToken = default)
+    {
+        return await _dbContext.Orders
+            .AsNoTracking()
+            .Include(order => order.Items)
+            .FirstOrDefaultAsync(
+                order => order.Id == id,
+                cancellationToken);
     }
 }
