@@ -1,5 +1,4 @@
 using Ecommerce.Domain.Enums;
-using Ecommerce.Domain.ValueObjects;
 
 namespace Ecommerce.Domain.Entities;
 
@@ -23,7 +22,7 @@ public class Order
 
     public Order(
         Guid customerId,
-        IEnumerable<OrderItemData> items)
+        IEnumerable<OrderItemInput> items)
     {
         if (customerId == Guid.Empty)
             throw new ArgumentException(
@@ -74,4 +73,18 @@ public class Order
 
         Status = OrderStatus.Cancelled;
     }
+
+    public void Confirm()
+    {
+        if (Status != OrderStatus.Pending)
+            throw new InvalidOperationException(
+                "Only pending orders can be confirmed.");
+
+        Status = OrderStatus.Confirmed;
+    }
+
+    public sealed record OrderItemInput(
+        string ProductName,
+        int Quantity,
+        decimal UnitPrice);
 }
