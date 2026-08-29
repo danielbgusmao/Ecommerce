@@ -42,6 +42,26 @@ public sealed class GlobalExceptionHandler : IExceptionHandler
             return true;
         }
 
+        if (exception is InvalidOperationException invalidOperationException)
+        {
+            var problemDetails = new ProblemDetails
+            {
+                Status = StatusCodes.Status409Conflict,
+                Title = "Domain conflict",
+                Detail = invalidOperationException.Message,
+                Instance = httpContext.Request.Path
+            };
+
+            httpContext.Response.StatusCode =
+                StatusCodes.Status409Conflict;
+
+            await httpContext.Response.WriteAsJsonAsync(
+                problemDetails,
+                cancellationToken);
+
+            return true;
+        }
+
         return false;
     }
 }
