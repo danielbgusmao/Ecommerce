@@ -7,6 +7,9 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -57,6 +60,18 @@ builder.Services
     });
 
 builder.Services.AddAuthorization();
+
+builder.Services
+    .AddOpenTelemetry()
+    .ConfigureResource(resource =>
+        resource.AddService("Ecommerce.Api"))
+    .WithTracing(tracing =>
+    {
+        tracing
+            .AddAspNetCoreInstrumentation()
+            .AddHttpClientInstrumentation()
+            .AddConsoleExporter();
+    });
 
 var app = builder.Build();
 
